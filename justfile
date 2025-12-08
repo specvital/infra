@@ -26,3 +26,13 @@ lint target="all":
         exit 1
         ;;
     esac
+
+makemigration name="changes":
+    cd db && atlas migrate diff {{ name }} --env local
+
+migrate:
+    cd db && atlas migrate apply --env local --allow-dirty
+
+reset:
+    psql "$DATABASE_URL" -c "DROP SCHEMA IF EXISTS atlas_schema_revisions CASCADE; DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+    cd db && atlas migrate apply --env local --allow-dirty
