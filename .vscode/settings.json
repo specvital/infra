@@ -55,6 +55,58 @@
       ]
     },
     {
+      "color": "teal",
+      "name": "$(tools) Utils",
+      "shortcut": "u",
+      "group": [
+        {
+          "command": "just deps",
+          "name": "Deps",
+          "shortcut": "d",
+          "terminalName": "Deps"
+        },
+        {
+          "command": "just lint",
+          "name": "Lint",
+          "shortcut": "l",
+          "terminalName": "Lint"
+        }
+      ]
+    },
+    {
+      "color": "tomato",
+      "executeAll": false,
+      "name": "$(database) DB Utils",
+      "shortcut": "d",
+      "group": [
+        {
+          "color": "",
+          "command": "just migrate",
+          "name": "migrate",
+          "shortcut": "m",
+          "terminalName": "migrate db",
+          "useVsCodeApi": false
+        },
+        {
+          "color": "",
+          "command": "just makemigration ",
+          "insertOnly": true,
+          "name": "makemigration",
+          "shortcut": "a",
+          "terminalName": "makemigration",
+          "useVsCodeApi": false
+        },
+        {
+          "color": "",
+          "command": "just reset",
+          "name": "reset",
+          "shortcut": "r",
+          "terminalName": "reset db",
+          "useVsCodeApi": false
+        }
+      ]
+    },
+    {
       "color": "blue",
       "command": "export IS_SANDBOX=1 && claude --dangerously-skip-permissions",
       "name": "$(hubot) Claude",
