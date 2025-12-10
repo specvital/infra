@@ -22,10 +22,10 @@ docker compose ps
 
 ## Services
 
-| Service    | Port | Container Name      | Description   |
-| ---------- | ---- | ------------------- | ------------- |
-| PostgreSQL | 5432 | specvital-postgres  | Database      |
-| Redis      | 6379 | specvital-redis     | Queue & Cache |
+| Service    | Port | Container Name     | Description   |
+| ---------- | ---- | ------------------ | ------------- |
+| PostgreSQL | 5432 | specvital-postgres | Database      |
+| Redis      | 6379 | specvital-redis    | Queue & Cache |
 
 ## Connection
 
@@ -126,8 +126,8 @@ Or for simple devcontainer.json (without docker-compose):
   "runArgs": ["--network=specvital-network"],
   "containerEnv": {
     "DATABASE_URL": "postgres://postgres:postgres@specvital-postgres:5432/specvital?sslmode=disable",
-    "REDIS_URL": "redis://specvital-redis:6379"
-  }
+    "REDIS_URL": "redis://specvital-redis:6379",
+  },
 }
 ```
 
