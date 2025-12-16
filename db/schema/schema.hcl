@@ -59,6 +59,11 @@ table "codebases" {
     default = sql("now()")
   }
 
+  column "last_viewed_at" {
+    type = timestamptz
+    null = true
+  }
+
   primary_key {
     columns = [column.id]
   }
@@ -69,6 +74,11 @@ table "codebases" {
 
   index "idx_codebases_owner_name" {
     columns = [column.owner, column.name]
+  }
+
+  index "idx_codebases_last_viewed" {
+    columns = [column.last_viewed_at]
+    where   = "last_viewed_at IS NOT NULL"
   }
 }
 
