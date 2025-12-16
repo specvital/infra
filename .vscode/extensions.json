@@ -15,6 +15,7 @@
     "usernamehw.errorlens",
     "kubrickcode.quick-command-buttons",
     "intellsmi.comment-translate",
-    "hashicorp.hcl"
+    "hashicorp.hcl",
+    "databricks.neon-local-connect"
   ]
 }
