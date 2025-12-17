@@ -53,3 +53,6 @@ reset target="all":
         exit 1
         ;;
     esac
+
+sync-docs:
+  baedal specvital/specvital.github.io/docs docs --exclude ".vitepress/**"
