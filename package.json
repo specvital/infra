@@ -1,6 +1,6 @@
 {
   "name": "specvital-infra",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Infrastructure code for Specvital project",
   "repository": {
     "type": "git",
