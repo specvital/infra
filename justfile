@@ -57,26 +57,11 @@ release:
     git checkout main
     echo "✅ Release triggered! Check GitHub Actions for progress."
 
-reset target="all":
+reset:
     #!/usr/bin/env bash
     set -euo pipefail
-    case "{{ target }}" in
-      all)
-        just reset db
-        just reset redis
-        ;;
-      db)
-        psql "$DATABASE_URL" -c "DROP SCHEMA IF EXISTS atlas_schema_revisions CASCADE; DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
-        cd db && atlas migrate apply --env local --allow-dirty
-        ;;
-      redis)
-        redis-cli -u "$REDIS_URL" FLUSHALL
-        ;;
-      *)
-        echo "Unknown target: {{ target }}"
-        exit 1
-        ;;
-    esac
+    psql "$DATABASE_URL" -c "DROP SCHEMA IF EXISTS atlas_schema_revisions CASCADE; DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+    cd db && atlas migrate apply --env local --allow-dirty
 
 sync-docs:
     baedal specvital/specvital.github.io/docs docs --exclude ".vitepress/**"

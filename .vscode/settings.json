@@ -106,26 +106,10 @@
         },
         {
           "color": "",
-          "command": "just reset all",
-          "name": "reset all",
+          "command": "just reset",
+          "name": "reset",
           "shortcut": "r",
-          "terminalName": "reset all",
-          "useVsCodeApi": false
-        },
-        {
-          "color": "",
-          "command": "just reset db",
-          "name": "reset db",
-          "shortcut": "d",
           "terminalName": "reset db",
-          "useVsCodeApi": false
-        },
-        {
-          "color": "",
-          "command": "just reset redis",
-          "name": "reset redis",
-          "shortcut": "s",
-          "terminalName": "reset redis",
           "useVsCodeApi": false
         }
       ]

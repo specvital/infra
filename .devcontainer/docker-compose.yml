@@ -13,12 +13,9 @@ services:
       - ${HOME}/.env.secrets
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/specvital?sslmode=disable
-      REDIS_URL: redis://redis:6379
     command: sleep infinity
     depends_on:
       postgres:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     networks:
       - specvital-network
@@ -44,24 +41,6 @@ services:
     networks:
       - specvital-network
 
-  redis:
-    image: redis:7-alpine
-    container_name: specvital-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - specvital-redis-data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-      start_period: 5s
-    restart: unless-stopped
-    command: redis-server --appendonly yes
-    networks:
-      - specvital-network
-
 networks:
   specvital-network:
     name: specvital-network
@@ -70,4 +49,3 @@ networks:
 volumes:
   claude-sessions:
   specvital-postgres-data:
-  specvital-redis-data:
