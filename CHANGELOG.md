@@ -2,6 +2,19 @@
 
 ### ✨ Features
 
+- **db:** add River job queue migration ([86b6157](https://github.com/specvital/infra/commit/86b61576794e3df0a097f151e67afad9f38c2abc))
+
+## 🔧 Maintenance
+
+### 🔨 Chore
+
+- adding a go environment to a container for riverqueue use ([ee45552](https://github.com/specvital/infra/commit/ee45552c4d80fd457c61df5f31c110534d4a0f7f))
+- remove Redis dependency ([916c622](https://github.com/specvital/infra/commit/916c6227d3646e6d8baad8efe8e663e3f50b525b))
+
+## 🎯 Highlights
+
+### ✨ Features
+
 - add Atlas-based database schema management ([da9fb70](https://github.com/specvital/infra/commit/da9fb70f603c5cbc686b1f0412350f29d18969fa))
 - add PostgreSQL/Redis infrastructure for local development ([a86dc00](https://github.com/specvital/infra/commit/a86dc0074e954c85b5cf94e0225eeec4fcaddf9f))
 - **db:** add last_viewed_at column for auto-refresh service ([7f2b1cf](https://github.com/specvital/infra/commit/7f2b1cf1fa24462df960827620529c2c474d04bc))
