@@ -28,7 +28,26 @@ lint target="all":
     esac
 
 makemigration name="changes":
-    cd db && atlas migrate diff {{ name }} --env local
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd db
+    atlas migrate diff {{ name }} --env local
+
+    # Find the latest migration file
+    LATEST=$(ls -t schema/migrations/*.sql | head -1)
+
+    # Remove River-related DROP statements
+    if grep -q "river_" "$LATEST"; then
+        sed -i '/^-- Drop.*river/d' "$LATEST"
+        sed -i '/^DROP TABLE.*river/d' "$LATEST"
+        sed -i '/^DROP TYPE.*river/d' "$LATEST"
+        sed -i '/^DROP FUNCTION.*river/d' "$LATEST"
+        # Remove empty lines at end of file
+        sed -i -e :a -e '/^\s*$/d;N;ba' "$LATEST"
+        # Recalculate hash
+        atlas migrate hash --env local
+        echo "✅ Removed River DROP statements from $LATEST"
+    fi
 
 migrate:
     cd db && atlas migrate apply --env local --allow-dirty
