@@ -44,6 +44,15 @@ table "codebases" {
     type = varchar(255)
   }
 
+  column "external_repo_id" {
+    type = varchar(64)
+  }
+
+  column "is_stale" {
+    type    = bool
+    default = false
+  }
+
   column "default_branch" {
     type = varchar(100)
     null = true
@@ -68,8 +77,15 @@ table "codebases" {
     columns = [column.id]
   }
 
-  unique "uq_codebases_identity" {
+  index "idx_codebases_identity" {
     columns = [column.host, column.owner, column.name]
+    unique  = true
+    where   = "is_stale = false"
+  }
+
+  index "idx_codebases_external_repo_id" {
+    columns = [column.host, column.external_repo_id]
+    unique  = true
   }
 
   index "idx_codebases_owner_name" {
