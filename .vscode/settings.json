@@ -78,6 +78,14 @@
           "name": "Lint",
           "shortcut": "l",
           "terminalName": "Lint"
+        },
+        {
+          "color": "",
+          "command": "just sync-docs",
+          "name": "Sync Docs",
+          "shortcut": "s",
+          "terminalName": "Sync Docs",
+          "useVsCodeApi": false
         }
       ]
     },
