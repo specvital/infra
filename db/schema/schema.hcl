@@ -432,3 +432,40 @@ table "oauth_accounts" {
     columns = [column.user_id, column.provider]
   }
 }
+
+table "user_bookmarks" {
+  schema = schema.public
+
+  column "user_id" {
+    type = uuid
+  }
+
+  column "codebase_id" {
+    type = uuid
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.user_id, column.codebase_id]
+  }
+
+  foreign_key "fk_user_bookmarks_user" {
+    columns     = [column.user_id]
+    ref_columns = [table.users.column.id]
+    on_delete   = CASCADE
+  }
+
+  foreign_key "fk_user_bookmarks_codebase" {
+    columns     = [column.codebase_id]
+    ref_columns = [table.codebases.column.id]
+    on_delete   = CASCADE
+  }
+
+  index "idx_user_bookmarks_user" {
+    columns = [column.user_id, column.created_at]
+  }
+}
