@@ -533,3 +533,258 @@ table "user_analysis_history" {
     columns = [column.analysis_id]
   }
 }
+
+// ==============================================================================
+// GitHub Cache Tables
+// ==============================================================================
+
+table "user_github_repositories" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  column "user_id" {
+    type = uuid
+  }
+
+  column "github_repo_id" {
+    type = bigint
+  }
+
+  column "name" {
+    type = varchar(255)
+  }
+
+  column "full_name" {
+    type = varchar(500)
+  }
+
+  column "html_url" {
+    type = text
+  }
+
+  column "description" {
+    type = text
+    null = true
+  }
+
+  column "default_branch" {
+    type = varchar(100)
+    null = true
+  }
+
+  column "language" {
+    type = varchar(50)
+    null = true
+  }
+
+  column "visibility" {
+    type    = varchar(20)
+    default = "public"
+  }
+
+  column "is_private" {
+    type    = bool
+    default = false
+  }
+
+  column "archived" {
+    type    = bool
+    default = false
+  }
+
+  column "disabled" {
+    type    = bool
+    default = false
+  }
+
+  column "fork" {
+    type    = bool
+    default = false
+  }
+
+  column "stargazers_count" {
+    type    = int
+    default = 0
+  }
+
+  column "pushed_at" {
+    type = timestamptz
+    null = true
+  }
+
+  column "source_type" {
+    type    = varchar(20)
+    default = "personal"
+  }
+
+  column "org_id" {
+    type = uuid
+    null = true
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  column "updated_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  foreign_key "fk_user_github_repositories_user" {
+    columns     = [column.user_id]
+    ref_columns = [table.users.column.id]
+    on_delete   = CASCADE
+  }
+
+  foreign_key "fk_user_github_repositories_org" {
+    columns     = [column.org_id]
+    ref_columns = [table.github_organizations.column.id]
+    on_delete   = CASCADE
+  }
+
+  unique "uq_user_github_repositories_user_repo" {
+    columns = [column.user_id, column.github_repo_id]
+  }
+
+  index "idx_user_github_repositories_user" {
+    columns = [column.user_id, column.updated_at]
+  }
+
+  index "idx_user_github_repositories_language" {
+    columns = [column.user_id, column.language]
+    where   = "language IS NOT NULL"
+  }
+
+  index "idx_user_github_repositories_org" {
+    columns = [column.user_id, column.org_id]
+    where   = "org_id IS NOT NULL"
+  }
+
+  index "idx_user_github_repositories_source" {
+    columns = [column.user_id, column.source_type]
+  }
+}
+
+table "github_organizations" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  column "github_org_id" {
+    type = bigint
+  }
+
+  column "login" {
+    type = varchar(255)
+  }
+
+  column "avatar_url" {
+    type = text
+    null = true
+  }
+
+  column "html_url" {
+    type = text
+    null = true
+  }
+
+  column "description" {
+    type = text
+    null = true
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  column "updated_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  unique "uq_github_organizations_github_org_id" {
+    columns = [column.github_org_id]
+  }
+
+  index "idx_github_organizations_login" {
+    columns = [column.login]
+  }
+}
+
+table "user_github_org_memberships" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  column "user_id" {
+    type = uuid
+  }
+
+  column "org_id" {
+    type = uuid
+  }
+
+  column "role" {
+    type = varchar(50)
+    null = true
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  column "updated_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  foreign_key "fk_user_github_org_memberships_user" {
+    columns     = [column.user_id]
+    ref_columns = [table.users.column.id]
+    on_delete   = CASCADE
+  }
+
+  foreign_key "fk_user_github_org_memberships_org" {
+    columns     = [column.org_id]
+    ref_columns = [table.github_organizations.column.id]
+    on_delete   = CASCADE
+  }
+
+  unique "uq_user_github_org_memberships_user_org" {
+    columns = [column.user_id, column.org_id]
+  }
+
+  index "idx_user_github_org_memberships_user" {
+    columns = [column.user_id]
+  }
+
+  index "idx_user_github_org_memberships_org" {
+    columns = [column.org_id]
+  }
+}
