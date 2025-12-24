@@ -436,6 +436,11 @@ table "oauth_accounts" {
 table "user_bookmarks" {
   schema = schema.public
 
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
   column "user_id" {
     type = uuid
   }
@@ -450,7 +455,7 @@ table "user_bookmarks" {
   }
 
   primary_key {
-    columns = [column.user_id, column.codebase_id]
+    columns = [column.id]
   }
 
   foreign_key "fk_user_bookmarks_user" {
@@ -465,6 +470,10 @@ table "user_bookmarks" {
     on_delete   = CASCADE
   }
 
+  unique "uq_user_bookmarks_user_codebase" {
+    columns = [column.user_id, column.codebase_id]
+  }
+
   index "idx_user_bookmarks_user" {
     columns = [column.user_id, column.created_at]
   }
@@ -472,6 +481,11 @@ table "user_bookmarks" {
 
 table "user_analysis_history" {
   schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
 
   column "user_id" {
     type = uuid
@@ -492,7 +506,7 @@ table "user_analysis_history" {
   }
 
   primary_key {
-    columns = [column.user_id, column.analysis_id]
+    columns = [column.id]
   }
 
   foreign_key "fk_user_analysis_history_user" {
@@ -505,6 +519,10 @@ table "user_analysis_history" {
     columns     = [column.analysis_id]
     ref_columns = [table.analyses.column.id]
     on_delete   = CASCADE
+  }
+
+  unique "uq_user_analysis_history_user_analysis" {
+    columns = [column.user_id, column.analysis_id]
   }
 
   index "idx_user_analysis_history_user" {
