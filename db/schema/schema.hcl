@@ -19,6 +19,11 @@ enum "oauth_provider" {
   values = ["github"]
 }
 
+enum "github_account_type" {
+  schema = schema.public
+  values = ["organization", "user"]
+}
+
 // ==============================================================================
 // Tables
 // ==============================================================================
@@ -531,6 +536,83 @@ table "user_analysis_history" {
 
   index "idx_user_analysis_history_analysis" {
     columns = [column.analysis_id]
+  }
+}
+
+// ==============================================================================
+// GitHub App Tables
+// ==============================================================================
+
+table "github_app_installations" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  column "installation_id" {
+    type = bigint
+  }
+
+  column "account_type" {
+    type = enum.github_account_type
+  }
+
+  column "account_id" {
+    type = bigint
+  }
+
+  column "account_login" {
+    type = varchar(255)
+  }
+
+  column "account_avatar_url" {
+    type = text
+    null = true
+  }
+
+  column "installer_user_id" {
+    type = uuid
+    null = true
+  }
+
+  column "suspended_at" {
+    type = timestamptz
+    null = true
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  column "updated_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  foreign_key "fk_github_app_installations_installer" {
+    columns     = [column.installer_user_id]
+    ref_columns = [table.users.column.id]
+    on_delete   = SET_NULL
+  }
+
+  unique "uq_github_app_installations_installation_id" {
+    columns = [column.installation_id]
+  }
+
+  unique "uq_github_app_installations_account" {
+    columns = [column.account_type, column.account_id]
+  }
+
+  index "idx_github_app_installations_installer" {
+    columns = [column.installer_user_id]
+    where   = "installer_user_id IS NOT NULL"
   }
 }
 
