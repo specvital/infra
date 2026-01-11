@@ -199,7 +199,7 @@ table "analyses" {
   }
 }
 
-table "test_suites" {
+table "test_files" {
   schema = schema.public
 
   column "id" {
@@ -208,6 +208,51 @@ table "test_suites" {
   }
 
   column "analysis_id" {
+    type = uuid
+  }
+
+  column "file_path" {
+    type = varchar(1000)
+  }
+
+  column "framework" {
+    type = varchar(50)
+    null = true
+  }
+
+  column "domain_hints" {
+    type = jsonb
+    null = true
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  foreign_key "fk_test_files_analysis" {
+    columns     = [column.analysis_id]
+    ref_columns = [table.analyses.column.id]
+    on_delete   = CASCADE
+  }
+
+  unique "uq_test_files_analysis_path" {
+    columns = [column.analysis_id, column.file_path]
+  }
+
+  index "idx_test_files_analysis" {
+    columns = [column.analysis_id]
+  }
+}
+
+table "test_suites" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  column "file_id" {
     type = uuid
   }
 
@@ -220,17 +265,8 @@ table "test_suites" {
     type = varchar(500)
   }
 
-  column "file_path" {
-    type = varchar(1000)
-  }
-
   column "line_number" {
     type = int
-    null = true
-  }
-
-  column "framework" {
-    type = varchar(50)
     null = true
   }
 
@@ -243,9 +279,9 @@ table "test_suites" {
     columns = [column.id]
   }
 
-  foreign_key "fk_test_suites_analysis" {
-    columns     = [column.analysis_id]
-    ref_columns = [table.analyses.column.id]
+  foreign_key "fk_test_suites_file" {
+    columns     = [column.file_id]
+    ref_columns = [table.test_files.column.id]
     on_delete   = CASCADE
   }
 
@@ -259,17 +295,13 @@ table "test_suites" {
     expr = "id != parent_id"
   }
 
-  index "idx_test_suites_analysis" {
-    columns = [column.analysis_id]
+  index "idx_test_suites_file" {
+    columns = [column.file_id]
   }
 
   index "idx_test_suites_parent" {
     columns = [column.parent_id]
     where   = "parent_id IS NOT NULL"
-  }
-
-  index "idx_test_suites_file" {
-    columns = [column.analysis_id, column.file_path]
   }
 }
 
