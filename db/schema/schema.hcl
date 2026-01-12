@@ -914,10 +914,11 @@ table "user_github_repositories" {
 }
 
 // ==============================================================================
-// Spec View Cache
+// Spec View - Document-based Specification Schema
+// Hierarchy: spec_documents -> spec_domains -> spec_features -> spec_behaviors
 // ==============================================================================
 
-table "spec_view_cache" {
+table "spec_documents" {
   schema = schema.public
 
   column "id" {
@@ -925,37 +926,22 @@ table "spec_view_cache" {
     default = sql("gen_random_uuid()")
   }
 
-  column "cache_key_hash" {
-    type = bytea
-  }
-
-  column "codebase_id" {
+  column "analysis_id" {
     type = uuid
   }
 
-  column "file_path" {
-    type = text
-  }
-
-  column "framework" {
-    type = varchar(50)
-  }
-
-  column "suite_hierarchy" {
-    type = text
-  }
-
-  column "original_name" {
-    type = text
-  }
-
-  column "converted_name" {
-    type = text
+  column "content_hash" {
+    type = bytea
   }
 
   column "language" {
     type    = varchar(10)
     default = "en"
+  }
+
+  column "executive_summary" {
+    type = text
+    null = true
   }
 
   column "model_id" {
@@ -967,26 +953,195 @@ table "spec_view_cache" {
     default = sql("now()")
   }
 
+  column "updated_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
   primary_key {
     columns = [column.id]
   }
 
-  foreign_key "fk_spec_view_cache_codebase" {
-    columns     = [column.codebase_id]
-    ref_columns = [table.codebases.column.id]
+  foreign_key "fk_spec_documents_analysis" {
+    columns     = [column.analysis_id]
+    ref_columns = [table.analyses.column.id]
     on_delete   = CASCADE
   }
 
-  unique "uq_spec_view_cache_key_model" {
-    columns = [column.cache_key_hash, column.model_id]
+  unique "uq_spec_documents_hash_lang_model" {
+    columns = [column.content_hash, column.language, column.model_id]
   }
 
-  index "idx_spec_view_cache_lookup" {
-    columns = [column.cache_key_hash, column.model_id]
+  index "idx_spec_documents_analysis" {
+    columns = [column.analysis_id]
+  }
+}
+
+table "spec_domains" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
   }
 
-  index "idx_spec_view_cache_codebase" {
-    columns = [column.codebase_id]
+  column "document_id" {
+    type = uuid
+  }
+
+  column "name" {
+    type = varchar(255)
+  }
+
+  column "description" {
+    type = text
+    null = true
+  }
+
+  column "sort_order" {
+    type    = int
+    default = 0
+  }
+
+  column "classification_confidence" {
+    type = decimal(3, 2)
+    null = true
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  column "updated_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  foreign_key "fk_spec_domains_document" {
+    columns     = [column.document_id]
+    ref_columns = [table.spec_documents.column.id]
+    on_delete   = CASCADE
+  }
+
+  index "idx_spec_domains_document_sort" {
+    columns = [column.document_id, column.sort_order]
+  }
+}
+
+table "spec_features" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  column "domain_id" {
+    type = uuid
+  }
+
+  column "name" {
+    type = varchar(255)
+  }
+
+  column "description" {
+    type = text
+    null = true
+  }
+
+  column "sort_order" {
+    type    = int
+    default = 0
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  column "updated_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  foreign_key "fk_spec_features_domain" {
+    columns     = [column.domain_id]
+    ref_columns = [table.spec_domains.column.id]
+    on_delete   = CASCADE
+  }
+
+  index "idx_spec_features_domain_sort" {
+    columns = [column.domain_id, column.sort_order]
+  }
+}
+
+table "spec_behaviors" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  column "feature_id" {
+    type = uuid
+  }
+
+  column "source_test_case_id" {
+    type = uuid
+    null = true
+  }
+
+  column "original_name" {
+    type = varchar(2000)
+  }
+
+  column "converted_description" {
+    type = text
+  }
+
+  column "sort_order" {
+    type    = int
+    default = 0
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  foreign_key "fk_spec_behaviors_feature" {
+    columns     = [column.feature_id]
+    ref_columns = [table.spec_features.column.id]
+    on_delete   = CASCADE
+  }
+
+  foreign_key "fk_spec_behaviors_test_case" {
+    columns     = [column.source_test_case_id]
+    ref_columns = [table.test_cases.column.id]
+    on_delete   = SET_NULL
+  }
+
+  index "idx_spec_behaviors_feature_sort" {
+    columns = [column.feature_id, column.sort_order]
+  }
+
+  index "idx_spec_behaviors_source" {
+    columns = [column.source_test_case_id]
+    where   = "source_test_case_id IS NOT NULL"
   }
 }
 
