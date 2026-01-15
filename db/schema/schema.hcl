@@ -24,6 +24,11 @@ enum "github_account_type" {
   values = ["organization", "user"]
 }
 
+enum "usage_event_type" {
+  schema = schema.public
+  values = ["specview", "analysis"]
+}
+
 // ==============================================================================
 // System Config
 // ==============================================================================
@@ -1201,6 +1206,86 @@ table "user_specview_history" {
 
   index "idx_user_specview_history_document" {
     columns = [column.document_id]
+  }
+}
+
+// ==============================================================================
+// Usage Tracking Tables
+// ==============================================================================
+
+table "usage_events" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  column "user_id" {
+    type = uuid
+  }
+
+  column "event_type" {
+    type = enum.usage_event_type
+  }
+
+  column "analysis_id" {
+    type = uuid
+    null = true
+  }
+
+  column "document_id" {
+    type = uuid
+    null = true
+  }
+
+  column "quota_amount" {
+    type = int
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  foreign_key "fk_usage_events_user" {
+    columns     = [column.user_id]
+    ref_columns = [table.users.column.id]
+    on_delete   = CASCADE
+  }
+
+  foreign_key "fk_usage_events_analysis" {
+    columns     = [column.analysis_id]
+    ref_columns = [table.analyses.column.id]
+    on_delete   = SET_NULL
+  }
+
+  foreign_key "fk_usage_events_document" {
+    columns     = [column.document_id]
+    ref_columns = [table.spec_documents.column.id]
+    on_delete   = SET_NULL
+  }
+
+  check "chk_usage_events_resource" {
+    expr = "(analysis_id IS NOT NULL)::int + (document_id IS NOT NULL)::int = 1"
+  }
+
+  index "idx_usage_events_quota_lookup" {
+    columns = [column.user_id, column.event_type, column.created_at]
+  }
+
+  index "idx_usage_events_analysis" {
+    columns = [column.analysis_id]
+    where   = "analysis_id IS NOT NULL"
+  }
+
+  index "idx_usage_events_document" {
+    columns = [column.document_id]
+    where   = "document_id IS NOT NULL"
   }
 }
 
