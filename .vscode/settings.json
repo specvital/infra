@@ -86,6 +86,18 @@
           "shortcut": "s",
           "terminalName": "Sync Docs",
           "useVsCodeApi": false
+        },
+        {
+          "command": "just gen-schema-docs",
+          "name": "Schema Docs",
+          "shortcut": "g",
+          "terminalName": "Schema Docs"
+        },
+        {
+          "command": "just erd",
+          "name": "ERD",
+          "shortcut": "e",
+          "terminalName": "ERD"
         }
       ]
     },
