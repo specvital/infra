@@ -91,7 +91,7 @@ erd:
 install-tbls:
     go install github.com/k1LoW/tbls@v1.92.3
 
-schema-doc:
+gen-schema-docs:
     cd db && tbls doc --force
 
 river_version := "v0.26.0"
