@@ -1013,6 +1013,10 @@ table "spec_documents" {
   index "idx_spec_documents_user_created" {
     columns = [column.user_id, column.created_at]
   }
+
+  index "idx_spec_documents_content_hash_lang_model" {
+    columns = [column.content_hash, column.language, column.model_id]
+  }
 }
 
 table "spec_domains" {
