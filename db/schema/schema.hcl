@@ -1553,6 +1553,62 @@ table "behavior_caches" {
   }
 }
 
+// ==============================================================================
+// Classification Cache (Phase 1 result caching for incremental diff)
+// Cache key: SHA-256(sorted file paths + test identities)
+// ==============================================================================
+
+table "classification_caches" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  // SHA-256 hash of test file content for cache lookup
+  column "content_hash" {
+    type = bytea
+  }
+
+  column "language" {
+    type = varchar(10)
+  }
+
+  column "model_id" {
+    type = varchar(100)
+  }
+
+  // Full Phase1Output JSON (domains -> features -> test indices)
+  column "phase1_output" {
+    type = jsonb
+  }
+
+  // TestIdentity -> TestIndexEntry mapping for diff calculation
+  // Key: "filePath\x00suitePath\x00testName"
+  // Value: {"index": int, "featurePath": "Domain/Feature"}
+  column "test_index_map" {
+    type = jsonb
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  unique "uq_classification_caches_key" {
+    columns = [column.content_hash, column.language, column.model_id]
+  }
+
+  index "idx_classification_caches_created_at" {
+    columns = [column.created_at]
+  }
+}
+
 table "user_github_org_memberships" {
   schema = schema.public
 
