@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout infra
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Atlas
         uses: ariga/setup-atlas@v0
@@ -53,7 +53,7 @@ jobs:
           echo "Generated $(find docs/schema -name '*.md' | wc -l) doc files"
 
       - name: Checkout specvital.github.io
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: specvital/specvital.github.io
           token: ${{ secrets.PAT_TOKEN }}
