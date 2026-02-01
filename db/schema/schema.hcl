@@ -1668,3 +1668,73 @@ table "user_github_org_memberships" {
     columns = [column.org_id]
   }
 }
+
+// ==============================================================================
+// Quota Reservation (Race condition prevention for concurrent requests)
+// Reserves estimated usage at request time, releases on job completion/failure
+// ==============================================================================
+
+table "quota_reservations" {
+  schema = schema.public
+
+  column "id" {
+    type    = uuid
+    default = sql("gen_random_uuid()")
+  }
+
+  column "user_id" {
+    type = uuid
+  }
+
+  column "event_type" {
+    type = enum.usage_event_type
+  }
+
+  column "reserved_amount" {
+    type = int
+  }
+
+  // River job ID for cleanup on completion/failure
+  column "job_id" {
+    type = bigint
+  }
+
+  // TTL for orphan cleanup (default 1 hour)
+  column "expires_at" {
+    type    = timestamptz
+    default = sql("now() + interval '1 hour'")
+  }
+
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
+  }
+
+  primary_key {
+    columns = [column.id]
+  }
+
+  foreign_key "fk_quota_reservations_user" {
+    columns     = [column.user_id]
+    ref_columns = [table.users.column.id]
+    on_delete   = CASCADE
+  }
+
+  check "chk_reserved_amount_positive" {
+    expr = "reserved_amount > 0"
+  }
+
+  unique "uq_quota_reservations_job_id" {
+    columns = [column.job_id]
+  }
+
+  // Quota check query: SUM(reserved_amount) WHERE user_id = ? AND event_type = ?
+  index "idx_quota_reservations_user_event" {
+    columns = [column.user_id, column.event_type]
+  }
+
+  // Orphan cleanup query: DELETE WHERE expires_at < now()
+  index "idx_quota_reservations_expires" {
+    columns = [column.expires_at]
+  }
+}
