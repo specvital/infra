@@ -1,5 +1,56 @@
 # Changelog
 
+## [1.3.0](https://github.com/specvital/infra/compare/v1.2.0...v1.3.0) (2026-02-02)
+
+### 🎯 Highlights
+
+#### ✨ Features
+
+- add schema visualization and documentation tools ([f92cd2c](https://github.com/specvital/infra/commit/f92cd2c3415089175ecf7e420c1f4ecf9da81f02))
+- **db:** add behavior_caches table for Phase 2 caching ([8917156](https://github.com/specvital/infra/commit/8917156eeb8d1a5fe8a2c3bc44cc19d5a87a5756))
+- **db:** add classification_caches table for Phase 1 incremental caching ([87362bd](https://github.com/specvital/infra/commit/87362bd2de2415d9be663a8f4ee9517d0d2f5fc7))
+- **db:** add monthly_price column to subscription_plans ([63badbc](https://github.com/specvital/infra/commit/63badbc5e0ca605fca825d89ded6ea4ec9294187))
+- **db:** add parser version tracking for re-analysis support ([a681e0d](https://github.com/specvital/infra/commit/a681e0d08f1640b19b073e240b700b929b8feeca))
+- **db:** add quota_reservations table for concurrent request handling ([d3f15bf](https://github.com/specvital/infra/commit/d3f15bf9108c8e52f4193a7e2b17bdc29f011c25))
+- **db:** add retention_days_at_creation for creation-time retention policy ([7eb93aa](https://github.com/specvital/infra/commit/7eb93aac632ed03063451706da9beb07a6c8b26e))
+- **db:** add schema support for spec_documents versioning ([1b79497](https://github.com/specvital/infra/commit/1b79497f887439db0e5d2233492505a10f8dffcc))
+- **db:** add spec_view_cache table for AI conversion results ([9548a69](https://github.com/specvital/infra/commit/9548a69cb1d5aceaa344edb5e2d750d03afb8e03))
+- **db:** add subscription plans schema for usage limits ([efda341](https://github.com/specvital/infra/commit/efda341fbd9358c9b0cb7ff04ca3959733bed5e3))
+- **db:** add test_files table for schema normalization ([58b7c5b](https://github.com/specvital/infra/commit/58b7c5b9df1285d89f57bc41ad7b3cf5b7e30f7a))
+- **db:** add usage_events table for quota tracking ([e0dc198](https://github.com/specvital/infra/commit/e0dc19852d0afcb88a2f98f2b2f0e4a94ccf8832))
+- **db:** add user_id column to spec_documents table ([d861022](https://github.com/specvital/infra/commit/d861022e5aa8c13e66725a9ae84052d4f83a156c))
+- **db:** add user_specview_history table for tracking SpecView generation ([a196258](https://github.com/specvital/infra/commit/a1962584afbd32f27d499e5874ee4217da04d1c8))
+- **db:** replace spec_view_cache with hierarchical spec document schema ([38a33ad](https://github.com/specvital/infra/commit/38a33adaae2a8e28b27117a9cdf8a980be33dbc9))
+
+#### 🐛 Bug Fixes
+
+- **db:** add unique constraints for spec_documents concurrency issues ([ff17cb1](https://github.com/specvital/infra/commit/ff17cb1aeb2a4e61b0a0bc1f5a19880e9b4f5a1f))
+
+#### ⚡ Performance
+
+- **db:** add index for spec reuse query ([189f85c](https://github.com/specvital/infra/commit/189f85c150700876d472f1a4f1a1867c7f051e6c))
+
+### 🔧 Maintenance
+
+#### 🔧 Internal Fixes
+
+- **ci:** apply lint before creating schema docs PR ([aa00927](https://github.com/specvital/infra/commit/aa00927d496ddb28d2065dbf8909c14c0c25866a))
+
+#### 📚 Documentation
+
+- add specvital-specialist agent ([aa1dd4b](https://github.com/specvital/infra/commit/aa1dd4be5ddce0e6ab2dc488b45a05d1896dadbd))
+
+#### ♻️ Refactoring
+
+- rename schema-doc command to gen-schema-docs ([25e0463](https://github.com/specvital/infra/commit/25e04637b03130c264a93ba9e712de38442400c9))
+
+#### 🔨 Chore
+
+- sync ai-config-toolkit ([692d774](https://github.com/specvital/infra/commit/692d774da4da3175db4a55830e625295981d7642))
+- sync docs ([bade4cf](https://github.com/specvital/infra/commit/bade4cf2cb45e6d901a70dfdd36decce770aecc9))
+- sync-docs ([4cc4b51](https://github.com/specvital/infra/commit/4cc4b511de533c7ae675b5f30d1439a0a9475db7))
+- **vscode:** add schema tools to Quick Command Buttons ([e6eb0a6](https://github.com/specvital/infra/commit/e6eb0a63fea3fb4d1656cd66ec13c7f05c5767dd))
+
 ## [1.2.0](https://github.com/specvital/infra/compare/v1.1.0...v1.2.0) (2026-01-04)
 
 ### 🎯 Highlights
